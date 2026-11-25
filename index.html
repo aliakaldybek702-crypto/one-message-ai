@@ -187,11 +187,75 @@ function analyze(){
  document.getElementById("results").scrollIntoView({behavior:"smooth"});
 }
 
+const experimentAnswers = {
+  "Подростки": [],
+  "Взрослые": []
+};
+
+function sendExperiment() {
+  const selected = document.querySelector('input[name="emotion"]:checked');
+  const age = document.getElementById("ageGroup").value;
+  const result = document.getElementById("experimentResult");
+
+  if (!selected) {
+    result.textContent = "Сначала выбери эмоцию!";
+    return;
+  }
+
+  experimentAnswers[age].push(selected.value);
+
+  const teens = experimentAnswers["Подростки"];
+  const adults = experimentAnswers["Взрослые"];
+
+  function summary(arr) {
+    if (arr.length === 0) return "Пока нет ответов.";
+
+    const counts = {};
+    arr.forEach(item => counts[item] = (counts[item] || 0) + 1);
+
+    return Object.entries(counts).map(([emotion, count]) => {
+      return emotion + " — " + Math.round(count / arr.length * 100) + "%";
+    }).join("<br>");
+  }
+
+  result.innerHTML =
+    "<b>Твой ответ принят!</b><br><br>" +
+    "<b>Подростки (" + teens.length + " ответов):</b><br>" + summary(teens) +
+    "<br><br><b>Взрослые (" + adults.length + " ответов):</b><br>" + summary(adults);
+
+  document.querySelectorAll('input[name="emotion"]').forEach(input => {
+    input.checked = false;
+  });
 function escapeHTML(value){
  return value.replace(/[&<>"']/g,function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
  });
-}
+}<section class="card">
+<h2>Интерактивный эксперимент</h2>
+<p>Как ты воспринимаешь это сообщение?</p>
+
+<div class="result">
+<h3 id="experimentMessage">«Ладно.»</h3>
+</div>
+
+<div id="emotionOptions">
+<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
+<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
+<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
+<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
+<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
+</div>
+
+<p>Выбери свою возрастную группу:</p>
+<select id="ageGroup">
+<option value="Подростки">Подросток</option>
+<option value="Взрослые">Взрослый</option>
+</select>
+
+<br>
+<button onclick="sendExperiment()">Отправить ответ</button>
+<div id="experimentResult" class="result" style="margin-top:15px"></div>
+</section>
 </script>
 </body>
 </html>
