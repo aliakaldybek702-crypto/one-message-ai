@@ -66,28 +66,40 @@ footer{text-align:center;padding:25px;color:#776b6c;font-size:13px}
 
 <section class="card">
 <h2>03. Интерактивный эксперимент</h2>
+
 <p>Прочитай сообщение и выбери эмоцию, которую оно у тебя вызывает.</p>
+
 <div class="result">
-<h3 id="stimulus">«Ладно.»</h3>
+  <h3 id="stimulus">«Хорошо.»</h3>
 </div>
+
+<button onclick="changeMessage(-1)">← Назад</button>
+<button onclick="changeMessage(1)">Следующее →</button>
+
+<p id="messageNumber">Сообщение 1 из 4</p>
+
 <p><b>Как ты воспринимаешь это сообщение?</b></p>
+
 <div id="choices">
-<label class="option"><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label>
-<label class="option"><input type="radio" name="emotion" value="Обида"> Обида</label>
-<label class="option"><input type="radio" name="emotion" value="Раздражение"> Раздражение</label>
-<label class="option"><input type="radio" name="emotion" value="Радость"> Радость</label>
-<label class="option"><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
+  <label class="option"><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label>
+  <label class="option"><input type="radio" name="emotion" value="Обида"> Обида</label>
+  <label class="option"><input type="radio" name="emotion" value="Раздражение"> Раздражение</label>
+  <label class="option"><input type="radio" name="emotion" value="Радость"> Радость</label>
+  <label class="option"><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
 </div>
+
 <p><b>Укажи возрастную группу:</b></p>
+
 <select id="age">
-<option value="Подростки">Подросток</option>
-<option value="Взрослые">Взрослый</option>
+  <option value="Подростки">Подросток</option>
+  <option value="Взрослые">Взрослый</option>
 </select>
-<br>
+
+<br><br>
 <button onclick="vote()">Отправить ответ</button>
+
 <div id="voteMessage" class="result hidden" style="margin-top:15px"></div>
 </section>
-
 <section class="card">
 <h2>04. Результаты эксперимента</h2>
 <p>Результаты ответов, сохранённых в этом браузере.</p>
@@ -116,165 +128,166 @@ footer{text-align:center;padding:25px;color:#776b6c;font-size:13px}
 <script>
 const storageKey = "oneMessageVotes2026";
 
+const messages = [
+  "Хорошо.",
+  "Хорошо!!!",
+  "Ну ладно...",
+  "Понятно 🙃"
+];
+
+let currentMessage = 0;
+
 function getVotes(){
- try{
-  return JSON.parse(localStorage.getItem(storageKey)) || [];
- }catch(e){
-  return [];
- }
+  try {
+    return JSON.parse(localStorage.getItem(storageKey)) || [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function changeMessage(direction){
+  currentMessage = (currentMessage + direction + messages.length) % messages.length;
+
+  document.getElementById("stimulus").textContent =
+    "«" + messages[currentMessage] + "»";
+
+  document.getElementById("messageNumber").textContent =
+    "Сообщение " + (currentMessage + 1) + " из " + messages.length;
+
+  document.querySelectorAll('input[name="emotion"]').forEach(input => {
+    input.checked = false;
+  });
+
+  document.getElementById("voteMessage").classList.add("hidden");
 }
 
 function analyze(){
- const text = document.getElementById("message").value.trim();
- if(!text){
-  alert("Сначала введи сообщение.");
-  return;
- }
+  const text = document.getElementById("message").value.trim();
 
- let features = [];
- let teen = "Возможна нейтральная интерпретация. Однако значение зависит от контекста и отношений собеседников.";
- let adult = "Сообщение может восприниматься буквально, но его эмоциональная окраска также зависит от контекста.";
+  if(!text){
+    alert("Сначала введи сообщение.");
+    return;
+  }
 
- if(text.endsWith(".")){
-  features.push("Точка в конце может восприниматься как нейтральное завершение или как знак дистанции.");
-  teen = "Некоторые подростки могут воспринимать точку как холодность или серьёзность.";
-  adult = "Некоторые взрослые могут воспринимать точку как обычный знак завершения предложения.";
- }
- if(text.includes("!")){
-  features.push("Восклицательный знак усиливает выразительность.");
-  teen = "Может восприниматься как эмоциональность, радость или настойчивость.";
-  adult = "Может восприниматься как эмоциональное подчёркивание мысли.";
- }
- if(text.includes("?")){
-  features.push("Вопросительный знак обозначает вопрос, а в определённом контексте может выражать сомнение или удивление.");
- }
- if(text.includes("...")){
-  features.push("Многоточие может создавать ощущение паузы, недосказанности или сомнения.");
-  teen = "Может восприниматься как намёк, обида или недовольство.";
-  adult = "Может восприниматься как пауза или незавершённость мысли.";
- }
- if(/[А-ЯA-Z]/.test(text) && text === text.toUpperCase()){
-  features.push("Использование заглавных букв может усиливать визуальную выразительность.");
-  teen = "Может восприниматься как крик или сильная эмоция.";
-  adult = "Может восприниматься как акцент или повышенная эмоциональность.";
- }
- if(/[😀😂😊❤️😍🥰✨]/u.test(text)){
-  features.push("Положительные эмодзи могут усиливать дружелюбный тон.");
- }
- if(/[😡😭😒🙄💔]/u.test(text)){
-  features.push("Эмодзи могут передавать недовольство, грусть или разочарование.");
- }
- if(features.length === 0){
-  features.push("Явных особенностей пунктуации и оформления не обнаружено.");
- }
+  let result = "Сообщение может восприниматься по-разному в зависимости от контекста.";
 
- let emotion = "Эмоциональная окраска неоднозначна.";
- const low = text.toLowerCase();
- if(/люблю|ура|супер|класс|спасибо|радост|обожаю/.test(low)){
-  emotion = "Есть признаки положительной эмоциональной окраски.";
- }
- if(/ненавиж|злюсь|ужас|отстань|бесит|плохо/.test(low)){
-  emotion = "Есть признаки отрицательной эмоциональной окраски.";
- }
+  if(text.includes("!!!")){
+    result = "Несколько восклицательных знаков могут передавать сильные эмоции, восторг или раздражение.";
+  } else if(text.includes("...")){
+    result = "Многоточие может создавать впечатление паузы, сомнения или недосказанности.";
+  } else if(text.endsWith(".")){
+    result = "Точка может восприниматься как обычное завершение мысли, но иногда создаёт ощущение холодности.";
+  } else if(text.includes("?")){
+    result = "Вопросительный знак передаёт вопрос, а в некоторых ситуациях может выражать удивление.";
+  }
 
- document.getElementById("analysis").innerHTML =
-  "<b>Текст:</b> " + escapeHTML(text) +
-  "<br><br><b>Эмоциональная окраска:</b> " + emotion +
-  "<br><br><b>Особенности оформления:</b><br>" +
-  features.map(x => "• " + escapeHTML(x)).join("<br>");
-
- document.getElementById("teenView").textContent = teen;
- document.getElementById("adultView").textContent = adult;
- document.getElementById("analysis").classList.remove("hidden");
+  document.getElementById("analysis").textContent = result;
+  document.getElementById("teenView").textContent =
+    "Восприятие зависит от привычек общения и контекста.";
+  document.getElementById("adultView").textContent =
+    "Восприятие также зависит от ситуации, отношений между собеседниками и контекста.";
 }
-</script>
-</body>
-</html>
+
 function vote(){
- const selected = document.querySelector('input[name="emotion"]:checked');
- const age = document.getElementById("age").value;
- const message = document.getElementById("voteMessage");
+  const selected = document.querySelector('input[name="emotion"]:checked');
+  const age = document.getElementById("age").value;
+  const message = document.getElementById("voteMessage");
 
- if(!selected){
-  message.textContent = "Пожалуйста, выбери эмоцию.";
+  if(!selected){
+    message.textContent = "Пожалуйста, выбери эмоцию.";
+    message.classList.remove("hidden");
+    return;
+  }
+
+  const votes = getVotes();
+
+  votes.push({
+    age: age,
+    emotion: selected.value,
+    message: messages[currentMessage],
+    date: new Date().toISOString()
+  });
+
+  localStorage.setItem(storageKey, JSON.stringify(votes));
+
+  message.textContent = "Спасибо! Твой ответ сохранён на этом устройстве.";
   message.classList.remove("hidden");
-  return;
- }
 
- const votes = getVotes();
- votes.push({
-  age: age,
-  emotion: selected.value,
-  date: new Date().toISOString()
- });
+  document.querySelectorAll('input[name="emotion"]').forEach(input => {
+    input.checked = false;
+  });
 
- localStorage.setItem(storageKey, JSON.stringify(votes));
-
- message.textContent = "Спасибо! Твой ответ сохранён на этом устройстве.";
- message.classList.remove("hidden");
-
- document.querySelectorAll('input[name="emotion"]').forEach(input => {
-  input.checked = false;
- });
-
- updateStats();
+  updateStats();
 }
 
 function updateStats(){
- const votes = getVotes();
+  const votes = getVotes();
 
- const groups = {
-  "Подростки": document.getElementById("teenStats"),
-  "Взрослые": document.getElementById("adultStats")
- };
+  const groups = {
+    "Подростки": document.getElementById("teenStats"),
+    "Взрослые": document.getElementById("adultStats")
+  };
 
- Object.keys(groups).forEach(age => {
-  const list = votes.filter(v => v.age === age);
-  const target = groups[age];
+  Object.keys(groups).forEach(age => {
+    const target = groups[age];
+    let html = "";
 
-  if(list.length === 0){
-   target.textContent = "Пока нет ответов.";
-   return;
-  }
+    messages.forEach(msg => {
+      const list = votes.filter(v =>
+        v.age === age && v.message === msg
+      );
 
-  const counts = {};
-  list.forEach(v => {
-   counts[v.emotion] = (counts[v.emotion] || 0) + 1;
+      html += "<p><b>«" + escapeHTML(msg) + "»</b></p>";
+
+      if(list.length === 0){
+        html += "<p>Пока нет ответов.</p>";
+        return;
+      }
+
+      const counts = {};
+
+      list.forEach(v => {
+        counts[v.emotion] = (counts[v.emotion] || 0) + 1;
+      });
+
+      html += "<p>Всего ответов: " + list.length + "</p>";
+
+      Object.keys(counts).forEach(emotion => {
+        const percent = Math.round(counts[emotion] / list.length * 100);
+
+        html += escapeHTML(emotion) + " — " + percent + "%";
+        html += '<div class="bar"><div class="fill" style="width:' + percent + '%"></div></div>';
+      });
+    });
+
+    target.innerHTML = html;
   });
-
-  target.innerHTML = "<b>Всего ответов: " + list.length + "</b><br>";
-
-  Object.keys(counts).forEach(emotion => {
-   const percent = Math.round(counts[emotion] / list.length * 100);
-
-   target.innerHTML +=
-    escapeHTML(emotion) + " — " + percent + "%" +
-    '<div class="bar"><div class="fill" style="width:' + percent + '%"></div></div>';
-  });
- });
 }
 
 function clearVotes(){
- if(confirm("Удалить ответы, сохранённые в этом браузере?")){
-  localStorage.removeItem(storageKey);
-  updateStats();
-  document.getElementById("voteMessage").textContent = "Ответы очищены.";
- }
+  if(confirm("Удалить ответы, сохранённые в этом браузере?")){
+    localStorage.removeItem(storageKey);
+    updateStats();
+    document.getElementById("voteMessage").textContent = "Ответы очищены.";
+  }
 }
 
 function escapeHTML(value){
- return String(value).replace(/[&<>"']/g, function(c){
-  return {
-   "&":"&amp;",
-   "<":"&lt;",
-   ">":"&gt;",
-   '"':"&quot;",
-   "'":"&#39;"
-  }[c];
- });
+  return String(value).replace(/[&<>"']/g, function(c){
+    return {
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c];
+  });
 }
 
+document.getElementById("stimulus").textContent =
+  "«" + messages[0] + "»";
+
 updateStats();
-</script>
+            </script>
 </body>
 </html>
