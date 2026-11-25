@@ -179,38 +179,82 @@ function changeMessage(direction){
   document.getElementById("voteMessage").classList.add("hidden");
 }
 
+
 function analyze(){
-  const text = document.getElementById("message").value.trim();
+  const field = document.getElementById("message");
+  const result = document.getElementById("analysis");
+  const teen = document.getElementById("teenView");
+  const adult = document.getElementById("adultView");
+
+  const text = field.value.trim();
 
   if(!text){
     alert("Сначала введи сообщение.");
     return;
   }
 
-  let result = "Сообщение может восприниматься по-разному в зависимости от контекста.";
+  const lower = text.toLowerCase();
 
-  if(text.includes("!!!")){
-    result = "Несколько восклицательных знаков могут передавать сильные эмоции, восторг или раздражение.";
-  } else if(text.includes("...")){
-    result = "Многоточие может создавать впечатление паузы, сомнения или недосказанности.";
-  } else if(text.endsWith(".")){
-    result = "Точка может восприниматься как обычное завершение мысли, но иногда создаёт ощущение холодности.";
-  } else if(text.includes("?")){
-    result = "Вопросительный знак передаёт вопрос или удивление.";
-  } else if(text.toUpperCase() === text && /[А-ЯЁ]/.test(text)){
-    result = "Написание заглавными буквами может восприниматься как усиление эмоции или крик.";
+  const positive = ["спасибо", "люблю", "супер", "классно", "рада", "рад", "отлично", "ура"];
+  const negative = ["плохо", "ненавижу", "обидно", "грустно", "злюсь", "ужасно", "надоело"];
+  const uncertain = ["наверное", "возможно", "не знаю", "сомневаюсь"];
+
+  let emotions = [];
+
+  if(positive.some(word => lower.includes(word))){
+    emotions.push("Возможная положительная эмоция: радость, благодарность или одобрение.");
   }
 
-  const analysis = document.getElementById("analysis");
-  analysis.textContent = result;
-  analysis.classList.remove("hidden");
+  if(negative.some(word => lower.includes(word))){
+    emotions.push("Возможная отрицательная эмоция: недовольство, грусть или раздражение.");
+  }
 
-  document.getElementById("teenView").textContent =
-    "Восприятие зависит от привычек общения и контекста.";
+  if(uncertain.some(word => lower.includes(word))){
+    emotions.push("В сообщении заметны признаки сомнения или неуверенности.");
+  }
 
-  document.getElementById("adultView").textContent =
-    "Восприятие зависит от ситуации, отношений между собеседниками и контекста.";
+  if(/[😂😊❤️😍🥰🙂🙃]/u.test(text)){
+    emotions.push("Эмодзи могут смягчать сообщение или усиливать положительную эмоциональную окраску.");
+  }
+
+  if(/[😡😢😭💔🙄]/u.test(text)){
+    emotions.push("Эмодзи могут указывать на недовольство, грусть или ироничное отношение.");
+  }
+
+  if(text.includes("!!!")){
+    emotions.push("Несколько восклицательных знаков усиливают эмоциональную выразительность.");
+  }
+
+  if(text.includes("...")){
+    emotions.push("Многоточие может создавать ощущение паузы, сомнения или недосказанности.");
+  }
+
+  if(text.endsWith(".")){
+    emotions.push("Точка завершает высказывание, но в неформальной переписке иногда воспринимается как холодная интонация.");
+  }
+
+  if(text === text.toUpperCase() && /[А-ЯЁ]/.test(text)){
+    emotions.push("Заглавные буквы могут восприниматься как усиление эмоции или крик.");
+  }
+
+  if(emotions.length === 0){
+    emotions.push("Явных эмоциональных маркеров не обнаружено. Для понимания сообщения важен контекст.");
+  }
+
+  result.textContent =
+    "АНАЛИЗ СООБЩЕНИЯ\n\n" +
+    emotions.join("\n\n") +
+    "\n\nВАЖНО: это возможные трактовки, а не точное определение чувств автора.";
+
+  result.classList.remove("hidden");
+
+  teen.textContent =
+    "Возможное восприятие подростками зависит от привычек общения, контекста и отношений между собеседниками.";
+
+  adult.textContent =
+    "Возможное восприятие взрослыми также зависит от контекста, ситуации и личного опыта.";
 }
+
 
 function vote(){
   const selected = document.querySelector('input[name="emotion"]:checked');
