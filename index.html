@@ -178,14 +178,20 @@ function analyze(){
   } else if(text.endsWith(".")){
     result = "Точка может восприниматься как обычное завершение мысли, но иногда создаёт ощущение холодности.";
   } else if(text.includes("?")){
-    result = "Вопросительный знак передаёт вопрос, а в некоторых ситуациях может выражать удивление.";
+    result = "Вопросительный знак передаёт вопрос или удивление.";
+  } else if(text.toUpperCase() === text && /[А-ЯЁ]/.test(text)){
+    result = "Написание заглавными буквами может восприниматься как усиление эмоции или крик.";
   }
 
-  document.getElementById("analysis").textContent = result;
+  const analysis = document.getElementById("analysis");
+  analysis.textContent = result;
+  analysis.classList.remove("hidden");
+
   document.getElementById("teenView").textContent =
     "Восприятие зависит от привычек общения и контекста.";
+
   document.getElementById("adultView").textContent =
-    "Восприятие также зависит от ситуации, отношений между собеседниками и контекста.";
+    "Восприятие зависит от ситуации, отношений между собеседниками и контекста.";
 }
 
 function vote(){
