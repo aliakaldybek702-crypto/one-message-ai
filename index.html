@@ -445,6 +445,36 @@ function sendExperiment() {
     input.checked = false;
   });
 }
+function sendExperiment() {
+  const selected = document.querySelector('input[name="emotion"]:checked');
+  const age = document.getElementById("ageGroup").value;
+  const result = document.getElementById("experimentResult");
+
+  if (!selected) {
+    result.textContent = "Сначала выбери эмоцию!";
+    return;
+  }
+
+  const key = "experimentAnswers";
+  const answers = JSON.parse(localStorage.getItem(key) || '{"Подростки":[],"Взрослые":[]}');
+
+  answers[age].push(selected.value);
+  localStorage.setItem(key, JSON.stringify(answers));
+
+  function summary(arr) {
+    if (!arr.length) return "Пока нет ответов";
+    const counts = {};
+    arr.forEach(x => counts[x] = (counts[x] || 0) + 1);
+    return Object.entries(counts).map(([name, count]) =>
+      name + " — " + Math.round(count / arr.length * 100) + "%"
+    ).join("<br>");
+  }
+
+  result.innerHTML =
+    "<b>Ответ сохранён на этом устройстве!</b><br><br>" +
+    "<b>Подростки:</b><br>" + summary(answers["Подростки"]) +
+    "<br><br><b>Взрослые:</b><br>" + summary(answers["Взрослые"]);
+}
  function escapeHTML(value){
  return value.replace(/[&<>"']/g,function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
