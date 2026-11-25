@@ -2,68 +2,32 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ONE MESSAGE — Анализ сообщений</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#f8f3ef;
- color:#302629;
-}
-header{
- background:#672f3b;
- color:white;
- text-align:center;
- padding:35px 15px;
-}
-header h1{letter-spacing:4px;margin:0 0 12px}
-header p{margin:0;color:#f2dfe1}
-main{max-width:950px;margin:30px auto;padding:15px}
-.card{
- background:white;
- border-radius:18px;
- padding:24px;
- margin-bottom:20px;
- box-shadow:0 5px 20px #4b273010;
-}
-h2{color:#713b47}
-textarea{
- width:100%;
- min-height:120px;
- border:1px solid #d9c5c6;
- border-radius:12px;
- padding:15px;
- font-size:17px;
- resize:vertical;
-}
-button{
- background:#713b47;
- color:white;
- border:0;
- border-radius:10px;
- padding:14px 22px;
- font-size:16px;
- cursor:pointer;
- margin-top:12px;
-}
+body{margin:0;background:#f7f1ed;color:#33272a;font-family:Arial,sans-serif;line-height:1.6}
+header{background:#672f3b;color:white;text-align:center;padding:45px 18px}
+header h1{letter-spacing:5px;font-size:30px;margin:0}
+header p{color:#f1dfe1}
+main{max-width:1000px;margin:30px auto;padding:0 16px}
+.card{background:white;border-radius:18px;padding:25px;margin-bottom:22px;box-shadow:0 5px 22px #512b3510}
+h2{color:#713b47;margin-top:0}
+textarea,select{width:100%;padding:14px;border:1px solid #d8c3c5;border-radius:11px;font-size:16px;background:white}
+textarea{min-height:115px;resize:vertical}
+button{background:#713b47;color:white;border:0;border-radius:10px;padding:13px 20px;font-size:15px;cursor:pointer;margin-top:12px}
 button:hover{background:#512631}
-.grid{
- display:grid;
- grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
- gap:15px;
-}
-.result{
- background:#faf5f2;
- border-radius:13px;
- padding:17px;
- line-height:1.6;
-}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.result{background:#faf5f2;border-radius:13px;padding:17px;overflow-wrap:anywhere}
 .teen{border-top:5px solid #b56b79}
 .adult{border-top:5px solid #71849c}
-.small{font-size:13px;color:#776b6c}
+.muted{font-size:13px;color:#776b6c}
+.option{display:block;padding:9px 0;cursor:pointer}
+.option input{margin-right:8px}
+.bar{height:13px;background:#eadfe0;border-radius:20px;overflow:hidden;margin:6px 0 12px}
+.fill{height:100%;background:#8c4b59;width:0}
 .hidden{display:none}
+footer{text-align:center;padding:25px;color:#776b6c;font-size:13px}
 </style>
 </head>
 <body>
@@ -71,389 +35,246 @@ button:hover{background:#512631}
 <header>
 <h1>ONE MESSAGE</h1>
 <p>Одно сообщение — несколько смыслов</p>
+<p>Исследование эмоций в русской интернет-коммуникации</p>
 </header>
 
 <main>
+
 <section class="card">
-<h2>Анализируй своё сообщение</h2>
-<p>Введи любое сообщение и узнай, как оно может восприниматься разными людьми.</p>
+<h2>01. Анализ сообщения</h2>
+<p>Введи любое сообщение и изучи, как его оформление может влиять на восприятие.</p>
 <textarea id="message" placeholder="Например: Хорошо."></textarea>
-<br>
-<button onclick="analyze()">Анализировать сообщение</button>
+<button onclick="analyze()">Анализировать</button>
+<div id="analysis" class="result hidden" style="margin-top:18px"></div>
 </section>
 
-<section id="results" class="hidden">
-<div class="card">
-<h2>1. Общий анализ сообщения</h2>
-<div class="result" id="general"></div>
-</div>
-
-<div class="card">
-<h2>2. Восприятие разных поколений</h2>
+<section class="card">
+<h2>02. Как воспринимают сообщение разные поколения?</h2>
+<p>Одни и те же слова могут вызывать разные ассоциации. Посмотри на возможные варианты интерпретации.</p>
 <div class="grid">
 <div class="result teen">
 <h3>Подростки</h3>
-<div id="teen"></div>
+<p id="teenView">Здесь появится анализ после ввода сообщения.</p>
 </div>
 <div class="result adult">
 <h3>Взрослые</h3>
-<div id="adult"></div>
+<p id="adultView">Здесь появится анализ после ввода сообщения.</p>
 </div>
 </div>
-<p class="small">Это возможные варианты восприятия, а не мнение всех подростков или взрослых. Реакция зависит от контекста и личного опыта.</p>
-</div>
-
-<div class="card">
-<h2>3. Сравнение</h2>
-<div class="result" id="comparison"></div>
-</div>
+<p class="muted">Это предположительные варианты восприятия, а не утверждение о поведении всех представителей возрастных групп.</p>
 </section>
 
 <section class="card">
-<h2>О проекте</h2>
-<p>ONE MESSAGE — исследовательский проект о том, как пунктуация и графическое оформление влияют на восприятие эмоций в русской интернет-коммуникации.</p>
-<p class="small">Анализатор демонстрационный: он использует набор языковых правил и не является полноценной системой искусственного интеллекта.</p>
-</section><section class="card">
-<h2>Интерактивный эксперимент</h2>
-<p>Как ты воспринимаешь это сообщение?</p>
-
+<h2>03. Интерактивный эксперимент</h2>
+<p>Прочитай сообщение и выбери эмоцию, которую оно у тебя вызывает.</p>
 <div class="result">
-<h3>«Ладно.»</h3>
+<h3 id="stimulus">«Ладно.»</h3>
 </div>
-
-<p>Выбери эмоцию:</p>
-
-<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
-<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
-<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
-<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
-<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
-
-<p>Возрастная группа:</p>
-<select id="ageGroup">
+<p><b>Как ты воспринимаешь это сообщение?</b></p>
+<div id="choices">
+<label class="option"><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label>
+<label class="option"><input type="radio" name="emotion" value="Обида"> Обида</label>
+<label class="option"><input type="radio" name="emotion" value="Раздражение"> Раздражение</label>
+<label class="option"><input type="radio" name="emotion" value="Радость"> Радость</label>
+<label class="option"><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
+</div>
+<p><b>Укажи возрастную группу:</b></p>
+<select id="age">
 <option value="Подростки">Подросток</option>
 <option value="Взрослые">Взрослый</option>
 </select>
-
 <br>
-<button onclick="sendExperiment()">Отправить ответ</button>
-<div id="experimentResult" class="result" style="margin-top:15px"></div>
+<button onclick="vote()">Отправить ответ</button>
+<div id="voteMessage" class="result hidden" style="margin-top:15px"></div>
 </section>
- <section class="card">
-<h2>Интерактивный эксперимент</h2>
-<p>Как ты воспринимаешь это сообщение?</p>
 
-<div class="result">
-<h3>«Ладно.»</h3>
-</div>
-
-<p>Выбери эмоцию:</p>
-
-<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
-<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
-<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
-<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
-<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
-
-<p>Возрастная группа:</p>
-<select id="ageGroup">
-<option value="Подростки">Подросток</option>
-<option value="Взрослые">Взрослый</option>
-</select>
-
-<br>
-<button onclick="sendExperiment()">Отправить ответ</button>
-<div id="experimentResult" class="result" style="margin-top:15px"></div>
- </section>
- 
 <section class="card">
-<h2>Интерактивный эксперимент</h2>
-<p>Как ты воспринимаешь это сообщение?</p>
-
+<h2>04. Результаты эксперимента</h2>
+<p>Результаты ответов, сохранённых в этом браузере.</p>
+<div class="grid">
 <div class="result">
-<h3>«Ладно.»</h3>
+<h3>Подростки</h3>
+<div id="teenStats">Пока нет ответов.</div>
 </div>
-
-<p>Выбери эмоцию:</p>
-
-<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
-<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
-<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
-<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
-<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
-
-<p>Возрастная группа:</p>
-<select id="ageGroup">
-<option value="Подростки">Подросток</option>
-<option value="Взрослые">Взрослый</option>
-</select>
-
-<br>
-<button onclick="sendExperiment()">Отправить ответ</button>
-<div id="experimentResult" class="result" style="margin-top:15px"></div>
+<div class="result">
+<h3>Взрослые</h3>
+<div id="adultStats">Пока нет ответов.</div>
+</div>
+</div>
+<p class="muted">Один браузер хранит только свои ответы. Данные разных посетителей автоматически не объединяются.</p>
+<button onclick="clearVotes()">Очистить мои ответы</button>
 </section>
+
 <section class="card">
-<h2>Интерактивный эксперимент</h2>
-<p>Как ты воспринимаешь это сообщение?</p>
-
-<div class="result">
-<h3>«Ладно.»</h3>
-</div>
-
-<p>Выбери эмоцию:</p>
-
-<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
-<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
-<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
-<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
-<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
-
-<p>Возрастная группа:</p>
-<select id="ageGroup">
-<option value="Подростки">Подросток</option>
-<option value="Взрослые">Взрослый</option>
-</select>
-
-<br>
-<button onclick="sendExperiment()">Отправить ответ</button>
-<div id="experimentResult" class="result" style="margin-top:15px"></div>
-</section> <section class="card">
-<h2>Интерактивный эксперимент</h2>
-<p>Как ты воспринимаешь это сообщение?</p>
-
-<div class="result">
-<h3 id="experimentMessage">«Ладно.»</h3>
-</div>
-
-
-<div id="emotionOptions">
-<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
-<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
-<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
-<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
-<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
-</div>
-
-<p>Выбери свою возрастную группу:</p>
-<select id="ageGroup">
-<option value="Подростки">Подросток</option>
-<option value="Взрослые">Взрослый</option>
-</select>
-
-<br>
-<button onclick="sendExperiment()">Отправить ответ</button>
-<div id="experimentResult" class="result" style="margin-top:15px"></div>
+<h2>05. О проекте</h2>
+<p>ONE MESSAGE — интерактивная часть научно-исследовательского проекта «Одно сообщение — несколько смыслов: влияние пунктуации и графического оформления на восприятие эмоций в русской интернет-коммуникации».</p>
+<p>Цель проекта — изучить, как пунктуация, регистр букв и графические элементы могут менять эмоциональное восприятие письменного сообщения.</p>
 </section>
+
+</main>
+
 <script>
+const storageKey = "oneMessageVotes2026";
+
+function getVotes(){
+ try{
+  return JSON.parse(localStorage.getItem(storageKey)) || [];
+ }catch(e){
+  return [];
+ }
+}
+
 function analyze(){
- const raw=document.getElementById("message").value.trim();
- if(!raw){
-  alert("Сначала введи сообщение!");
+ const text = document.getElementById("message").value.trim();
+ if(!text){
+  alert("Сначала введи сообщение.");
   return;
  }
 
- const lower=raw.toLowerCase();
- let punctuation=[];
- let emotion="Нейтральная или неопределённая эмоциональная окраска.";
- let teenText="Могут воспринимать сообщение по-разному в зависимости от ситуации и отношений с собеседником.";
- let adultText="Могут воспринимать сообщение по-разному в зависимости от ситуации и привычного стиля общения.";
+ let features = [];
+ let teen = "Возможна нейтральная интерпретация. Однако значение зависит от контекста и отношений собеседников.";
+ let adult = "Сообщение может восприниматься буквально, но его эмоциональная окраска также зависит от контекста.";
 
- if(raw.endsWith(".")){
-  punctuation.push("Точка в конце предложения.");
-  teenText="Некоторые подростки могут воспринять точку как холодность или серьёзный тон.";
-  adultText="Некоторые взрослые могут воспринять точку как обычное завершение предложения.";
+ if(text.endsWith(".")){
+  features.push("Точка в конце может восприниматься как нейтральное завершение или как знак дистанции.");
+  teen = "Некоторые подростки могут воспринимать точку как холодность или серьёзность.";
+  adult = "Некоторые взрослые могут воспринимать точку как обычный знак завершения предложения.";
  }
- if(raw.includes("!")){
-  punctuation.push("Восклицательный знак усиливает выразительность.");
-  teenText="Может восприниматься как эмоциональность, радость или настойчивость.";
-  adultText="Может восприниматься как эмоциональное подчёркивание мысли.";
+ if(text.includes("!")){
+  features.push("Восклицательный знак усиливает выразительность.");
+  teen = "Может восприниматься как эмоциональность, радость или настойчивость.";
+  adult = "Может восприниматься как эмоциональное подчёркивание мысли.";
  }
- if(raw.includes("?")){
-  punctuation.push("Вопросительный знак обозначает вопрос, но в контексте может передавать удивление или сомнение.");
+ if(text.includes("?")){
+  features.push("Вопросительный знак обозначает вопрос, а в определённом контексте может выражать сомнение или удивление.");
  }
- if(raw.includes("...")){
-  punctuation.push("Многоточие может создавать ощущение паузы, недосказанности или сомнения.");
-  teenText="Могут увидеть в многоточии намёк, обиду или недовольство.";
-  adultText="Могут интерпретировать его как паузу или незавершённость мысли.";
+ if(text.includes("...")){
+  features.push("Многоточие может создавать ощущение паузы, недосказанности или сомнения.");
+  teen = "Может восприниматься как намёк, обида или недовольство.";
+  adult = "Может восприниматься как пауза или незавершённость мысли.";
  }
- if(raw===raw.toUpperCase() && /[А-ЯA-Z]/.test(raw)){
-  punctuation.push("Заглавные буквы могут усиливать визуальную выразительность.");
-  teenText="Могут воспринять текст как крик или сильное эмоциональное высказывание.";
-  adultText="Могут воспринять текст как акцент или повышенную эмоциональность.";
+ if(/[А-ЯA-Z]/.test(text) && text === text.toUpperCase()){
+  features.push("Использование заглавных букв может усиливать визуальную выразительность.");
+  teen = "Может восприниматься как крик или сильная эмоция.";
+  adult = "Может восприниматься как акцент или повышенная эмоциональность.";
  }
-
- if(/[😀😂😊❤️😍🥰✨]/u.test(raw)){
-  punctuation.push("Положительные эмодзи могут усиливать дружелюбный тон.");
+ if(/[😀😂😊❤️😍🥰✨]/u.test(text)){
+  features.push("Положительные эмодзи могут усиливать дружелюбный тон.");
  }
- if(/[😡😭😒🙄💔]/u.test(raw)){
-  punctuation.push("Эмодзи могут передавать недовольство, грусть или разочарование.");
+ if(/[😡😭😒🙄💔]/u.test(text)){
+  features.push("Эмодзи могут передавать недовольство, грусть или разочарование.");
  }
-
- if(/люблю|ура|супер|класс|спасибо|радост|обожаю/.test(lower)){
-  emotion="В сообщении заметны признаки положительной эмоциональной окраски.";
- }
- if(/ненавиж|злюсь|ужас|отстань|бесит|плохо/.test(lower)){
-  emotion="В сообщении заметны признаки отрицательной эмоциональной окраски.";
+ if(features.length === 0){
+  features.push("Явных особенностей пунктуации и оформления не обнаружено.");
  }
 
- if(punctuation.length===0){
-  punctuation.push("Выраженных особенностей пунктуации или оформления не обнаружено.");
+ let emotion = "Эмоциональная окраска неоднозначна.";
+ const low = text.toLowerCase();
+ if(/люблю|ура|супер|класс|спасибо|радост|обожаю/.test(low)){
+  emotion = "Есть признаки положительной эмоциональной окраски.";
+ }
+ if(/ненавиж|злюсь|ужас|отстань|бесит|плохо/.test(low)){
+  emotion = "Есть признаки отрицательной эмоциональной окраски.";
  }
 
- document.getElementById("general").innerHTML=
- "<b>Текст:</b> "+escapeHTML(raw)+
- "<br><b>Эмоциональная окраска:</b> "+emotion+
- "<br><b>Пунктуация и оформление:</b> "+punctuation.map(escapeHTML).join("<br>");
+ document.getElementById("analysis").innerHTML =
+  "<b>Текст:</b> " + escapeHTML(text) +
+  "<br><br><b>Эмоциональная окраска:</b> " + emotion +
+  "<br><br><b>Особенности оформления:</b><br>" +
+  features.map(x => "• " + escapeHTML(x)).join("<br>");
 
- document.getElementById("teen").textContent=teenText;
- document.getElementById("adult").textContent=adultText;
-
- document.getElementById("comparison").textContent=
- "Подростки и взрослые могут по-разному интерпретировать одинаковые графические средства. Однако возраст сам по себе не определяет реакцию: важны контекст, отношения между собеседниками и индивидуальные привычки общения.";
-
- document.getElementById("results").classList.remove("hidden");
- document.getElementById("results").scrollIntoView({behavior:"smooth"});
+ document.getElementById("teenView").textContent = teen;
+ document.getElementById("adultView").textContent = adult;
+ document.getElementById("analysis").classList.remove("hidden");
 }
+</script>
+</body>
+</html>
+function vote(){
+ const selected = document.querySelector('input[name="emotion"]:checked');
+ const age = document.getElementById("age").value;
+ const message = document.getElementById("voteMessage");
 
-const experimentAnswers = {
-  "Подростки": [],
-  "Взрослые": []
-};
+ if(!selected){
+  message.textContent = "Пожалуйста, выбери эмоцию.";
+  message.classList.remove("hidden");
+  return;
+ }
 
-function sendExperiment() {
-  const selected = document.querySelector('input[name="emotion"]:checked');
-  const age = document.getElementById("ageGroup").value;
-  const result = document.getElementById("experimentResult");
-
-  if (!selected) {
-    result.textContent = "Сначала выбери эмоцию!";
-    return;
-  }
-
-  experimentAnswers[age].push(selected.value);
-
-  const teens = experimentAnswers["Подростки"];
-  const adults = experimentAnswers["Взрослые"];
-
-  function summary(arr) {
-    if (arr.length === 0) return "Пока нет ответов.";
-
-    const counts = {};
-    arr.forEach(item => counts[item] = (counts[item] || 0) + 1);
-
-    return Object.entries(counts).map(([emotion, count]) => {
-      return emotion + " — " + Math.round(count / arr.length * 100) + "%";
-    }).join("<br>");
-  }
-
-  result.innerHTML =
-    "<b>Твой ответ принят!</b><br><br>" +
-    "<b>Подростки (" + teens.length + " ответов):</b><br>" + summary(teens) +
-    "<br><br><b>Взрослые (" + adults.length + " ответов):</b><br>" + summary(adults);
-
-  document.querySelectorAll('input[name="emotion"]').forEach(input => {
-    input.checked = false;
-  });
-const experimentAnswers = {
-  "Подростки": [],
-  "Взрослые": []
-};
-
-function sendExperiment() {
-  const selected = document.querySelector('input[name="emotion"]:checked');
-  const age = document.getElementById("ageGroup").value;
-  const result = document.getElementById("experimentResult");
-
-  if (!selected) {
-    result.textContent = "Сначала выбери эмоцию!";
-    return;
-  }
-
-  experimentAnswers[age].push(selected.value);
-
-  const teens = experimentAnswers["Подростки"];
-  const adults = experimentAnswers["Взрослые"];
-
-  function summary(arr) {
-    if (arr.length === 0) return "Пока нет ответов.";
-
-    const counts = {};
-    arr.forEach(item => counts[item] = (counts[item] || 0) + 1);
-
-    return Object.entries(counts).map(([emotion, count]) => {
-      return emotion + " — " + Math.round(count / arr.length * 100) + "%";
-    }).join("<br>");
-  }
-
-  result.innerHTML =
-    "<b>Твой ответ принят!</b><br><br>" +
-    "<b>Подростки (" + teens.length + " ответов):</b><br>" + summary(teens) +
-    "<br><br><b>Взрослые (" + adults.length + " ответов):</b><br>" + summary(adults);
-
-  document.querySelectorAll('input[name="emotion"]').forEach(input => {
-    input.checked = false;
-  });
-}
-function sendExperiment() {
-  const selected = document.querySelector('input[name="emotion"]:checked');
-  const age = document.getElementById("ageGroup").value;
-  const result = document.getElementById("experimentResult");
-
-  if (!selected) {
-    result.textContent = "Сначала выбери эмоцию!";
-    return;
-  }
-
-  const key = "experimentAnswers";
-  const answers = JSON.parse(localStorage.getItem(key) || '{"Подростки":[],"Взрослые":[]}');
-
-  answers[age].push(selected.value);
-  localStorage.setItem(key, JSON.stringify(answers));
-
-  function summary(arr) {
-    if (!arr.length) return "Пока нет ответов";
-    const counts = {};
-    arr.forEach(x => counts[x] = (counts[x] || 0) + 1);
-    return Object.entries(counts).map(([name, count]) =>
-      name + " — " + Math.round(count / arr.length * 100) + "%"
-    ).join("<br>");
-  }
-
-  result.innerHTML =
-    "<b>Ответ сохранён на этом устройстве!</b><br><br>" +
-    "<b>Подростки:</b><br>" + summary(answers["Подростки"]) +
-    "<br><br><b>Взрослые:</b><br>" + summary(answers["Взрослые"]);
-}
- function escapeHTML(value){
- return value.replace(/[&<>"']/g,function(c){
-  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+ const votes = getVotes();
+ votes.push({
+  age: age,
+  emotion: selected.value,
+  date: new Date().toISOString()
  });
-}<section class="card">
-<h2>Интерактивный эксперимент</h2>
-<p>Как ты воспринимаешь это сообщение?</p>
 
-<div class="result">
-<h3 id="experimentMessage">«Ладно.»</h3>
-</div>
+ localStorage.setItem(storageKey, JSON.stringify(votes));
 
-<div id="emotionOptions">
-<label><input type="radio" name="emotion" value="Нейтральность"> Нейтральность</label><br><br>
-<label><input type="radio" name="emotion" value="Обида"> Обида</label><br><br>
-<label><input type="radio" name="emotion" value="Раздражение"> Раздражение</label><br><br>
-<label><input type="radio" name="emotion" value="Спокойствие"> Спокойствие</label><br><br>
-<label><input type="radio" name="emotion" value="Не могу определить"> Не могу определить</label>
-</div>
+ message.textContent = "Спасибо! Твой ответ сохранён на этом устройстве.";
+ message.classList.remove("hidden");
 
-<p>Выбери свою возрастную группу:</p>
-<select id="ageGroup">
-<option value="Подростки">Подросток</option>
-<option value="Взрослые">Взрослый</option>
-</select>
+ document.querySelectorAll('input[name="emotion"]').forEach(input => {
+  input.checked = false;
+ });
 
-<br>
-<button onclick="sendExperiment()">Отправить ответ</button>
-<div id="experimentResult" class="result" style="margin-top:15px"></div>
-</section>
+ updateStats();
+}
+
+function updateStats(){
+ const votes = getVotes();
+
+ const groups = {
+  "Подростки": document.getElementById("teenStats"),
+  "Взрослые": document.getElementById("adultStats")
+ };
+
+ Object.keys(groups).forEach(age => {
+  const list = votes.filter(v => v.age === age);
+  const target = groups[age];
+
+  if(list.length === 0){
+   target.textContent = "Пока нет ответов.";
+   return;
+  }
+
+  const counts = {};
+  list.forEach(v => {
+   counts[v.emotion] = (counts[v.emotion] || 0) + 1;
+  });
+
+  target.innerHTML = "<b>Всего ответов: " + list.length + "</b><br>";
+
+  Object.keys(counts).forEach(emotion => {
+   const percent = Math.round(counts[emotion] / list.length * 100);
+
+   target.innerHTML +=
+    escapeHTML(emotion) + " — " + percent + "%" +
+    '<div class="bar"><div class="fill" style="width:' + percent + '%"></div></div>';
+  });
+ });
+}
+
+function clearVotes(){
+ if(confirm("Удалить ответы, сохранённые в этом браузере?")){
+  localStorage.removeItem(storageKey);
+  updateStats();
+  document.getElementById("voteMessage").textContent = "Ответы очищены.";
+ }
+}
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g, function(c){
+  return {
+   "&":"&amp;",
+   "<":"&lt;",
+   ">":"&gt;",
+   '"':"&quot;",
+   "'":"&#39;"
+  }[c];
+ });
+}
+
+updateStats();
 </script>
 </body>
 </html>
