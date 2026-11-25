@@ -49,6 +49,97 @@ footer{text-align:center;padding:25px;color:#776b6c;font-size:13px}
 </section>
 
 <section class="card">
+  function compareMessages(){
+  const a = document.getElementById("compareA").value.trim();
+  const b = document.getElementById("compareB").value.trim();
+  const output = document.getElementById("compareResult");
+
+  if(!a || !b){
+    output.textContent = "Введи оба сообщения для сравнения.";
+    output.classList.remove("hidden");
+    return;
+  }
+
+  function getFeatures(text){
+    let punctuation = [];
+    let emojis = [];
+
+    try {
+      punctuation = text.match(/\p{P}/gu) || [];
+      emojis = text.match(/\p{Extended_Pictographic}/gu) || [];
+    } catch(e) {
+      punctuation = text.match(/[.,!?;:…—–()[\]{}«»"'"]/g) || [];
+      emojis = text.match(/[😀-🙏🌀-🫿]/gu) || [];
+    }
+
+    return {
+      punctuation,
+      emojis,
+      uppercase: /[А-ЯЁA-Z]/.test(text) &&
+        text === text.toUpperCase(),
+      repeated: /([!?.,…])\1+/u.test(text),
+      length: text.length
+    };
+  }
+
+  const first = getFeatures(a);
+  const second = getFeatures(b);
+  const differences = [];
+
+  if(a === b){
+    differences.push("Сообщения полностью совпадают.");
+  } else {
+    if(first.punctuation.join("") !== second.punctuation.join("")){
+      differences.push(
+        "Пунктуация различается. Это может изменить интонацию, паузы и эмоциональный оттенок."
+      );
+    }
+
+    if(first.emojis.join("") !== second.emojis.join("")){
+      differences.push(
+        "Эмодзи различаются. Они могут добавить эмоциональную окраску или изменить трактовку."
+      );
+    }
+
+    if(first.uppercase !== second.uppercase){
+      differences.push(
+        "Изменился регистр букв. Заглавные буквы могут усиливать выразительность."
+      );
+    }
+
+    if(first.repeated !== second.repeated){
+      differences.push(
+        "Изменилось повторение знаков. Оно может усиливать эмоциональность сообщения."
+      );
+    }
+
+    if(first.length !== second.length){
+      differences.push(
+        "Сообщения имеют разную длину: " +
+        first.length + " и " + second.length + " символов."
+      );
+    }
+
+    if(differences.length === 0){
+      differences.push(
+        "Графические признаки похожи. Разница может заключаться в словах или контексте."
+      );
+    }
+  }
+
+  output.innerHTML =
+    "<h3>Результат сравнения</h3>" +
+    "<p><b>Первое сообщение:</b> " +
+    escapeHTML(a) + "</p>" +
+    "<p><b>Второе сообщение:</b> " +
+    escapeHTML(b) + "</p>" +
+    "<h3>Обнаруженные различия</h3>" +
+    differences.map(item => "<p>• " + escapeHTML(item) + "</p>").join("") +
+    "<p><b>Вывод:</b> даже небольшие графические изменения могут влиять на восприятие сообщения. Точная интерпретация зависит от контекста.</p>";
+
+  output.classList.remove("hidden");
+}
+
 <h2>02. Как воспринимают сообщение разные поколения?</h2>
 <p>Одни и те же слова могут вызывать разные ассоциации. Посмотри на возможные варианты интерпретации.</p>
 <div class="grid">
@@ -389,6 +480,59 @@ function updateStats(){
   });
 }
 
+
+function compareMessages(){
+  const a = document.getElementById("compareA").value.trim();
+  const b = document.getElementById("compareB").value.trim();
+  const output = document.getElementById("compareResult");
+
+  if(!a || !b){
+    output.textContent = "Введи оба сообщения для сравнения.";
+    output.classList.remove("hidden");
+    return;
+  }
+
+  function features(text){
+    let punctuation = text.match(/[.,!?;:…—–()[\]{}«»"'“”„]/g) || [];
+    let emojis = [];
+
+    try {
+      emojis = text.match(/\p{Extended_Pictographic}/gu) || [];
+    } catch(e) {}
+
+    return { punctuation, emojis };
+  }
+
+  const first = features(a);
+  const second = features(b);
+  let differences = [];
+
+  if(a === b){
+    differences.push("Сообщения полностью совпадают.");
+  } else {
+    if(first.punctuation.join("") !== second.punctuation.join("")){
+      differences.push("Пунктуация различается и может менять интонацию сообщения.");
+    }
+
+    if(first.emojis.join("") !== second.emojis.join("")){
+      differences.push("Эмодзи различаются и могут менять эмоциональную окраску.");
+    }
+
+    if(differences.length === 0){
+      differences.push("Графические признаки похожи. Различие может заключаться в словах или контексте.");
+    }
+  }
+
+  output.innerHTML =
+    "<h3>Результат сравнения</h3>" +
+    "<p><b>Первое сообщение:</b> " + escapeHTML(a) + "</p>" +
+    "<p><b>Второе сообщение:</b> " + escapeHTML(b) + "</p>" +
+    "<h3>Обнаруженные различия</h3>" +
+    differences.map(item => "<p>• " + escapeHTML(item) + "</p>").join("") +
+    "<p><b>Вывод:</b> оформление может влиять на восприятие сообщения. Точная интерпретация зависит от контекста.</p>";
+
+  output.classList.remove("hidden");
+}
 function clearVotes(){
   if(confirm("Удалить ответы, сохранённые в этом браузере?")){
     localStorage.removeItem(storageKey);
