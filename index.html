@@ -100,23 +100,41 @@ footer{text-align:center;padding:25px;color:#776b6c;font-size:13px}
 
 <div id="voteMessage" class="result hidden" style="margin-top:15px"></div>
 </section>
+
 <section class="card">
 <h2>04. Результаты эксперимента</h2>
-<p>Результаты ответов, сохранённых в этом браузере.</p>
+
+<p>Статистика ответов участников по каждому сообщению.</p>
+
 <div class="grid">
-<div class="result">
-<h3>Подростки</h3>
-<div id="teenStats">Пока нет ответов.</div>
+  <div class="result">
+    <h3>Всего ответов</h3>
+    <h2 id="totalVotes">0</h2>
+  </div>
+
+  <div class="result">
+    <h3>Подростки</h3>
+    <h2 id="teenTotal">0</h2>
+  </div>
+
+  <div class="result">
+    <h3>Взрослые</h3>
+    <h2 id="adultTotal">0</h2>
+  </div>
 </div>
-<div class="result">
-<h3>Взрослые</h3>
-<div id="adultStats">Пока нет ответов.</div>
-</div>
-</div>
-<p class="muted">Один браузер хранит только свои ответы. Данные разных посетителей автоматически не объединяются.</p>
+
+<h3>Распределение ответов подростков</h3>
+<div class="result" id="teenStats">Пока нет ответов.</div>
+
+<h3>Распределение ответов взрослых</h3>
+<div class="result" id="adultStats">Пока нет ответов.</div>
+
+<p class="muted">
+Данные сохраняются в браузере пользователя. Ответы разных посетителей автоматически не объединяются.
+</p>
+
 <button onclick="clearVotes()">Очистить мои ответы</button>
 </section>
-
 <section class="card">
 <h2>05. О проекте</h2>
 <p>ONE MESSAGE — интерактивная часть научно-исследовательского проекта «Одно сообщение — несколько смыслов: влияние пунктуации и графического оформления на восприятие эмоций в русской интернет-коммуникации».</p>
